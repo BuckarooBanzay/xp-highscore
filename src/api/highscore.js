@@ -5,14 +5,20 @@ const pool = require('../pool');
 app.get('/api/highscore', function (req, res) {
 	const params = req.body;
 
-	var query = "select p.name, md.value from player p join player_metadata md on p.name = md.player where md.attr = 'xp' order by md.value::int desc limit 10"
+	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p join player_metadata md on p.name = md.player where md.attr = 'xp' order by md.value::int desc limit 10"
 
 	pool
 	.query(query)
 	.then(result => {
 
 		var score = [];
-		result.rows.forEach(row => score.push({ name: row.name, xp: +row.value }));
+		result.rows.forEach(row => score.push({
+				name: row.name,
+				xp: +row.value,
+				created: row.creation_date,
+				modified: row.modification_date
+			}
+		));
 
 		var promises = result.rows.map(row => {
 			return pool.query("select attr, value from player_metadata where player = $1", [row.name])
