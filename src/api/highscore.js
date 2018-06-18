@@ -10,10 +10,32 @@ app.get('/api/highscore', function (req, res) {
 	pool
 	.query(query)
 	.then(result => {
-		res.json(result.rows);
+
+		var score = [];
+		result.rows.forEach(row => score.push({ name: row.name, xp: +row.value }));
+
+		var promises = result.rows.map(row => {
+			return pool.query("select attr, value from player_metadata where player = $1", [row.name])
+			.then(result => {
+				var res = {};
+				result.rows.forEach(row => res[row.attr] = row.value);
+				res.name = row.name;
+
+				var entry = score.find(s => s.name == row.name);
+				entry.attributes = res;
+				return res;
+			})
+			.catch(e => console.error(e));
+		});
+
+		return Promise.all(promises)
+		.then(result => score)
+		.catch(e => console.error(e));
 	})
+	.then(result => res.json(result))
 	.catch(e => {
-		res.status(500).end()
+		consoler.error(e);
+		res.status(500).end();
 	});
 
 });
