@@ -5,7 +5,7 @@ RUN apt-get update
 # node stuff
 RUN apt-get install -y nodejs npm
 
-COPY package.json package-lock.json /data/
+COPY package.json /data/
 COPY src /data/src
 COPY public /data/public
 
