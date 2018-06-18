@@ -1,13 +1,15 @@
 (function(){
 
-	var score = [];
+	var state = {
+		score: []
+	};
 
 	var HighscoreRows = {
 		view: function(){
 			var rows = [];
 			var ranking = 1;
 
-			score.forEach(function(player){
+			state.score.forEach(function(player){
 
 				var time_diff = moment(moment()).diff(player.modified);
 				var last_login = moment.duration(time_diff).humanize();
@@ -34,32 +36,34 @@
 		}
 	};
 
-	var Table = m("table", {class:"table table-condensed table-striped"}, [
-		m("thead", [
-			m("tr", [
-				m("th", "Ranking"),
-				m("th", "Name"),
-				m("th", "XP"),
-				m("th", "Dig-count"),
-				m("th", "Craft-count"),
-				m("th", "Build-count"),
-				m("th", "Death-count"),
-				m("th", "Play-time"),
-				m("th", "Last login"),
-				m("th", "Status")
-			])
-		]),
-		m(HighscoreRows)
-	]);
+	var Table = {
+		view: function(){
+			return m("table", {class:"table table-condensed table-striped"}, [
+				m("thead", [
+					m("tr", [
+						m("th", "Ranking"),
+						m("th", "Name"),
+						m("th", "XP"),
+						m("th", "Dig-count"),
+						m("th", "Craft-count"),
+						m("th", "Build-count"),
+						m("th", "Death-count"),
+						m("th", "Play-time"),
+						m("th", "Last login"),
+						m("th", "Status")
+					])
+				]),
+				m(HighscoreRows)
+			]);
+		}
+	};
+
+	m.mount(document.getElementById("app"), Table);
 
 	function update(){
 		m.request("api/highscore")
-		.then(function(s){
-			score = s;
-
-			m.render(document.getElementById("app"), [
-				Table
-			]);
+		.then(function(score){
+			state.score = score;
 		});
 	}
 
