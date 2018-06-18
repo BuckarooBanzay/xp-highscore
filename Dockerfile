@@ -1,0 +1,19 @@
+FROM ubuntu:artful
+
+RUN apt-get update
+
+# node stuff
+RUN apt-get install -y nodejs npm
+
+COPY package.json package-lock.json /data/
+COPY src /data/src
+COPY public /data/public
+
+RUN cd /data && npm i
+
+WORKDIR /data
+
+EXPOSE 8080
+
+CMD ["node", "src/index.js"]
+
