@@ -5,7 +5,7 @@ const pool = require('../pool');
 app.get('/api/highscore', function (req, res) {
 	const params = req.body;
 
-	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p join player_metadata md on p.name = md.player where md.attr = 'xp' order by md.value::int desc limit 10"
+	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p join player_metadata md on p.name = md.player where md.attr = 'xp' order by md.value::int desc limit 20"
 
 	pool
 	.query(query)
