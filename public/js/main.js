@@ -31,6 +31,15 @@
 		return currentRank;
 	}
 
+	function getPlayerImage(player){
+		var homedecor_skin = player.attributes["homedecor:player_skin"];
+		if (homedecor_skin) {
+			return "img/homedecor/" + homedecor_skin.split(".")[0] + "_preview.png";
+		} else {
+			return "img/sam.png"
+		}
+	}
+
 	function update(){
 		m.request("api/highscore?start=" + state.start)
 		.then(function(score){
@@ -94,7 +103,11 @@
 
 				rows.push(m("tr", [
 					m("td", m("h1", {class:"badge badge-primary"}, "" + ranking++)),
-					m("td", player.name),
+					m("td", [
+						m("img", {src:getPlayerImage(player)}),
+						" ",
+						player.name
+					]),
 					m("td", xp),
 					m("td", rankCol),
 					m("td", numberWithCommas(player.attributes.digged_nodes)),
