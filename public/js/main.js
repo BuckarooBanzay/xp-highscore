@@ -101,7 +101,7 @@
 					]);
 				}
 
-				rows.push(m("tr", [
+				rows.push(m("tr", {"class": (is_online?"table-success":"")}, [
 					m("td", m("h1", {class:"badge badge-primary"}, "" + ranking++)),
 					m("td", [
 						m("img", {src:getPlayerImage(player)}),
