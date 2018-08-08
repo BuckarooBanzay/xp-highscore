@@ -3,7 +3,9 @@
 	var state = {
 		score: [],
 		start: 0,
-		ranks: []
+		ranks: [],
+		sort: "xp",
+		busy: false
 	};
 
 	function numberWithCommas(x){
@@ -41,9 +43,11 @@
 	}
 
 	function update(){
-		m.request("api/highscore?start=" + state.start)
+		state.busy = true;
+		m.request("api/highscore?start=" + state.start + "&sort=" + state.sort)
 		.then(function(score){
 			state.score = score;
+			state.busy = false;
 		});
 	}
 
@@ -57,12 +61,35 @@
 		update();
 	}
 
+	function makeSortButton(column){
+		var className = "btn ";
+
+		if (state.sort == column)
+			className += "btn-primary";
+		else
+			className += "btn-secondary";
+
+		return m("button", {class: className, onclick: function(){ state.sort = column; update(); } }, [
+			m("i", {class: "fas fa-sort-amount-up"})
+		]);
+	}
+
 	var NextButton = {
 		view: function(){
+			var loadClass = "fas ";
+
+			if (state.busy)
+				loadClass += "fa-spinner fa-spin";
+			else
+				loadClass += "fa-check";
+
 			return m("div", {class:"btn-group"}, [
 				m("button", {class:"btn btn-secondary btn-lg", onclick: previous}, [
 					m("i", {class:"fas fa-step-backward"}),
 					" Previous"
+				]),
+				m("button", {class: "btn btn-secondary btn-lg"}, [
+					m("i", {class: loadClass})
 				]),
 				m("button", {class:"btn btn-secondary btn-lg", onclick: next}, [
 					"Next ",
@@ -85,10 +112,10 @@
 				var is_inactive = time_diff > (1000*3600*24*30); //30 days
 
 				var state = m("span", {class: "badge badge-" + (is_online?"success":"danger")}, is_online?"Online":"Offline");
-				var xp = m("span", {class: "badge badge-info"}, numberWithCommas(player.xp));
+				var xp = m("span", {class: "badge badge-info"}, numberWithCommas(player.attributes.xp));
 				var inactive = m("span", {class: "badge badge-secondary"}, "Inactive")
 
-				var rank = getRank(player.xp);
+				var rank = getRank(player.attributes.xp);
 
 				var rankCol = m("span");
 
@@ -132,13 +159,13 @@
 					m("tr", [
 						m("th", "Ranking"),
 						m("th", "Name"),
-						m("th", "XP"),
+						m("th", ["XP ", makeSortButton("xp")]),
 						m("th", "Rank"),
-						m("th", "Dig-count"),
-						m("th", "Craft-count"),
-						m("th", "Build-count"),
-						m("th", "Death-count"),
-						m("th", "Play-time"),
+						m("th", ["Dig-count", makeSortButton("digged_nodes")]),
+						m("th", ["Craft-count", makeSortButton("crafted")]),
+						m("th", ["Build-count", makeSortButton("placed_nodes")]),
+						m("th", ["Death-count", makeSortButton("died")]),
+						m("th", ["Play-time", makeSortButton("played_time")]),
 						m("th", "Last login"),
 						m("th", "Status")
 					])

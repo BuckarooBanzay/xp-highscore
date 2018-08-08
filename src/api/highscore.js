@@ -22,7 +22,7 @@ app.get('/api/highscore', function (req, res) {
 
 	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p";
 	query += " join player_metadata md on p.name = md.player";
-	query += " where md.attr = $1 order by md.value::int desc limit 10 offset " + offset;
+	query += " where md.attr = $1 order by md.value::real desc limit 10 offset " + offset;
 
 	pool
 	.query(query, [sort])
@@ -31,7 +31,6 @@ app.get('/api/highscore', function (req, res) {
 		var score = [];
 		result.rows.forEach(row => score.push({
 				name: row.name,
-				xp: +row.value,
 				created: row.creation_date,
 				modified: row.modification_date
 			}
