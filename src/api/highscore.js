@@ -6,19 +6,26 @@ app.get('/api/highscore', function (req, res) {
 	const params = req.body;
 
 	var offset = 0;
+	var sort = "xp";
+	
+	if (req.query) {
+		if (req.query.start){
+			var o = parseInt(req.query.start);
+			if (o && o > 0)
+				offset = o;
+		}
 
-	if (req.query && req.query.start) {
-		var o = parseInt(req.query.start);
-		if (o && o > 0)
-			offset = o;
+		if (req.query.sort){
+			sort = req.query.sort;
+		}
 	}
 
 	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p";
 	query += " join player_metadata md on p.name = md.player";
-	query += " where md.attr = 'xp' order by md.value::int desc limit 10 offset " + offset;
+	query += " where md.attr = $1 order by md.value::int desc limit 10 offset " + offset;
 
 	pool
-	.query(query)
+	.query(query, [sort])
 	.then(result => {
 
 		var score = [];
