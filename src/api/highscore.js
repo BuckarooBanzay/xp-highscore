@@ -34,7 +34,11 @@ app.get('/api/highscore', function (req, res) {
 			//sethome:home
 			//"homedecor:player_skin"
 			//const FIELDS = ["crafted", "placed_nodes", "died", "digged_nodes", "xp", "played_time"]
-			return pool.query("select attr, value from player_metadata where player = $1", [row.name])
+			var subquery = "select attr, value from player_metadata where player = $1";
+			subquery += " and attr in('crafted', 'placed_nodes', 'died', 'digged_nodes', 'xp', 'played_time', 'homedecor:player_skin')";
+
+
+			return pool.query(subquery, [row.name])
 			.then(result => {
 				var res = {};
 				result.rows.forEach(row => res[row.attr] = row.value);
