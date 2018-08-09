@@ -5,6 +5,7 @@
 		start: 0,
 		ranks: [],
 		sort: "xp",
+		order: "desc",
 		busy: false
 	};
 
@@ -44,7 +45,7 @@
 
 	function update(){
 		state.busy = true;
-		m.request("api/highscore?start=" + state.start + "&sort=" + state.sort)
+		m.request("api/highscore?start=" + state.start + "&sort=" + state.sort + "&order=" + state.order)
 		.then(function(score){
 			state.score = score;
 			state.busy = false;
@@ -62,16 +63,37 @@
 	}
 
 	function makeSortButton(column){
-		var className = "btn ";
+		var classNameAsc = "btn ";
+		var classNameDesc = "btn ";
 
-		if (state.sort == column)
-			className += "btn-primary";
-		else
-			className += "btn-secondary";
+		if (state.sort == column){
+			if (state.order == "asc"){
+				classNameAsc += "btn-primary";
+				classNameDesc += "btn-secondary";
+			} else {
+				classNameDesc += "btn-primary";
+				classNameAsc += "btn-secondary";
+			}
+		} else {
+			classNameDesc += "btn-secondary";
+			classNameAsc += "btn-secondary";
+		}
 
-		return m("button", {class: className, onclick: function(){ state.sort = column; update(); } }, [
-			m("i", {class: "fas fa-sort-amount-up"})
-		]);
+		function asc(){
+			state.sort = column;
+			state.order = "asc";
+			update()
+		}
+		function desc(){
+			state.sort = column;
+			state.order = "desc";
+			update()
+		}
+
+		return m("div", {class: "btn-group"}, [
+			m("button", {class: classNameDesc, onclick: desc}, m("i", {class: "fas fa-sort-amount-up"})),
+			m("button", {class: classNameAsc, onclick: asc}, m("i", {class: "fas fa-sort-amount-down"}))
+		])
 	}
 
 	var NextButton = {
@@ -108,6 +130,10 @@
 
 				var time_diff = moment(moment()).diff(player.modified);
 				var last_login = moment.duration(time_diff).humanize();
+
+				var joined_time_diff = moment(moment()).diff(player.created);
+				var joined = moment.duration(joined_time_diff).humanize();
+
 				var is_online = time_diff < 30000;
 				var is_inactive = time_diff > (1000*3600*24*30); //30 days
 
@@ -142,6 +168,7 @@
 					m("td", numberWithCommas(player.attributes.placed_nodes)),
 					m("td", player.attributes.died),
 					m("td", player.attributes.played_time ? moment.duration(+player.attributes.played_time, "seconds").humanize() : ""),
+					m("td", joined),
 					m("td", [last_login, " ", (is_inactive?inactive:null)]),
 					m("td", state)
 				]));
@@ -166,7 +193,8 @@
 						m("th", ["Build-count", makeSortButton("placed_nodes")]),
 						m("th", ["Death-count", makeSortButton("died")]),
 						m("th", ["Play-time", makeSortButton("played_time")]),
-						m("th", "Last login"),
+						m("th", ["Joined", makeSortButton("joined")]),
+						m("th", ["Last login", makeSortButton("online")]),
 						m("th", "Status")
 					])
 				]),

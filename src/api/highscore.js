@@ -6,26 +6,45 @@ app.get('/api/highscore', function (req, res) {
 	const params = req.body;
 
 	var offset = 0;
-	var sort = "xp";
+
+	var attrJoinColumn = "xp";
+	var orderColumn = "md.value::real";
+	var sortOrder = "desc";
 	
 	if (req.query) {
-		if (req.query.start){
-			var o = parseInt(req.query.start);
-			if (o && o > 0)
-				offset = o;
-		}
+		offset = req.query.start || 0;
+		if (req.query.order == "asc")
+			sortOrder = "asc";
 
 		if (req.query.sort){
-			sort = req.query.sort;
+				if (req.query.sort == "xp"){
+					//default
+				} else if (req.query.sort == "digged_nodes"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "crafted"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "placed_nodes"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "died"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "played_time"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "online"){
+					attrJoinColumn = "xp";
+					orderColumn = "p.modification_date";
+				} else if (req.query.sort == "joined"){
+					attrJoinColumn = "xp";
+					orderColumn = "p.creation_date";
+				}
 		}
 	}
 
 	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p";
 	query += " join player_metadata md on p.name = md.player";
-	query += " where md.attr = $1 order by md.value::real desc limit 10 offset " + offset;
+	query += " where md.attr = $1 order by " + orderColumn + " " + sortOrder + " limit 10 offset " + offset;
 
 	pool
-	.query(query, [sort])
+	.query(query, [attrJoinColumn])
 	.then(result => {
 
 		var score = [];
@@ -37,9 +56,6 @@ app.get('/api/highscore', function (req, res) {
 		));
 
 		var promises = result.rows.map(row => {
-			//sethome:home
-			//"homedecor:player_skin"
-			//const FIELDS = ["crafted", "placed_nodes", "died", "digged_nodes", "xp", "played_time"]
 			var subquery = "select attr, value from player_metadata where player = $1";
 			subquery += " and attr in('crafted', 'placed_nodes', 'died', 'digged_nodes', 'xp', 'played_time', 'homedecor:player_skin')";
 
