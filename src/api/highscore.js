@@ -27,6 +27,10 @@ app.get('/api/highscore', function (req, res) {
 					attrJoinColumn = req.query.sort;
 				} else if (req.query.sort == "died"){
 					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "punch_count"){
+					attrJoinColumn = req.query.sort;
+				} else if (req.query.sort == "inflicted_damage"){
+					attrJoinColumn = req.query.sort;
 				} else if (req.query.sort == "played_time"){
 					attrJoinColumn = req.query.sort;
 				} else if (req.query.sort == "online"){
@@ -57,7 +61,7 @@ app.get('/api/highscore', function (req, res) {
 
 		var promises = result.rows.map(row => {
 			var subquery = "select attr, value from player_metadata where player = $1";
-			subquery += " and attr in('crafted', 'placed_nodes', 'died', 'digged_nodes', 'xp', 'played_time', 'homedecor:player_skin')";
+			subquery += " and attr in('crafted', 'placed_nodes', 'died', 'digged_nodes', 'xp', 'played_time', 'punch_count', 'inflicted_damage', 'homedecor:player_skin')";
 
 
 			return pool.query(subquery, [row.name])
