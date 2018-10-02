@@ -12,7 +12,7 @@ app.get('/api/highscore', function (req, res) {
 	var sortOrder = "desc";
 	
 	if (req.query) {
-		offset = req.query.start || 0;
+		offset = parseInt(req.query.start) || 0;
 		if (req.query.order == "asc")
 			sortOrder = "asc";
 
