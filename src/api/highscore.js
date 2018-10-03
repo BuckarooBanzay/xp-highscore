@@ -2,8 +2,9 @@
 const app = require("../app");
 const pool = require('../pool');
 
+const getplayerattributes = require("../util/getplayerattributes");
+
 app.get('/api/highscore', function (req, res) {
-	const params = req.body;
 
 	var offset = 0;
 
@@ -60,21 +61,12 @@ app.get('/api/highscore', function (req, res) {
 		));
 
 		var promises = result.rows.map(row => {
-			var subquery = "select attr, value from player_metadata where player = $1";
-			subquery += " and attr in('crafted', 'placed_nodes', 'died', 'digged_nodes', 'xp', 'played_time', 'punch_count', 'inflicted_damage', 'homedecor:player_skin')";
-
-
-			return pool.query(subquery, [row.name])
-			.then(result => {
-				var res = {};
-				result.rows.forEach(row => res[row.attr] = row.value);
-				res.name = row.name;
-
+			return getplayerattributes(row.name)
+			.then(attrs => {
 				var entry = score.find(s => s.name == row.name);
-				entry.attributes = res;
-				return res;
-			})
-			.catch(e => console.error(e));
+				entry.attributes = attrs;
+				return attrs;
+			});
 		});
 
 		return Promise.all(promises)
