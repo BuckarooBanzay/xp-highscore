@@ -16,8 +16,10 @@ app.get('/api/playerinfo', function (req, res) {
 		pool
 		.query(query, [req.query.name])
 		.then(result => {
-			if (!result.rows)
-				res.stats(404).end;
+			if (result.rows.length == 0){
+				res.status(404).end();
+				return;
+			}
 
 			const row = result.rows[0];
 
