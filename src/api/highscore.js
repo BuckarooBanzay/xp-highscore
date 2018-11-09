@@ -46,7 +46,9 @@ app.get('/api/highscore', function (req, res) {
 
 	var query = "select p.name, p.modification_date, p.creation_date, md.value from player p";
 	query += " join player_metadata md on p.name = md.player";
-	query += " where md.attr = $1 order by " + orderColumn + " " + sortOrder + " limit 10 offset " + offset;
+	query += " where md.attr = $1";
+	query += " and p.modification_date > (NOW() - interval '1 month')";
+	query += " order by " + orderColumn + " " + sortOrder + " limit 10 offset " + offset;
 
 	pool
 	.query(query, [attrJoinColumn])
