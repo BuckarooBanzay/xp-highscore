@@ -26,6 +26,7 @@
 	}
 
 	updateSkins();
+	setInterval(updateSkins, 5000);
 
 	function getRank(xp){
 		var currentRank = null;
