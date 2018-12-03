@@ -6,7 +6,8 @@
 		ranks: [],
 		sort: "xp",
 		order: "desc",
-		busy: false
+		busy: false,
+		skinsdb: {}
 	};
 
 	function numberWithCommas(x){
@@ -18,6 +19,13 @@
 	//get ranks (already ordered ascending)
 	m.request("api/ranks")
 	.then(function(ranks){ state.ranks = ranks });
+
+	function updateSkins(){
+		m.request("api/skinsdb")
+		.then(function(skinsdb){ state.skinsdb = skinsdb });
+	}
+
+	updateSkins();
 
 	function getRank(xp){
 		var currentRank = null;
@@ -35,9 +43,9 @@
 	}
 
 	function getPlayerImage(player){
-		var homedecor_skin = player.attributes["homedecor:player_skin"];
-		if (homedecor_skin) {
-			return "img/homedecor/" + homedecor_skin.split(".")[0] + "_preview.png";
+		var skin_name = state.skinsdb[player.name]
+		if (skin_name) {
+			return "api/texture/" + skin_name + "_preview.png";
 		} else {
 			return "img/sam.png"
 		}
