@@ -16,7 +16,7 @@
 	}
 
 	//get ranks (already ordered ascending)
-	m.request("js/ranks.json")
+	m.request("api/ranks")
 	.then(function(ranks){ state.ranks = ranks });
 
 	function getRank(xp){
