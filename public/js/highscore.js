@@ -157,7 +157,7 @@
 				if (rank){
 					var color = rank.color;
 					rankCol = m("span", [
-						m("img", {src:"img/xp/" + rank.icon}),
+						m("img", {src:"api/texture/" + rank.icon}),
 						" ",
 						m("span", {"style":"color: rgb("+color.r+","+color.g+","+color.b+")"}, rank.name)
 					]);
