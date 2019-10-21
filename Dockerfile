@@ -1,9 +1,4 @@
-FROM ubuntu:artful
-
-RUN apt-get update
-
-# node stuff
-RUN apt-get install -y nodejs npm
+FROM node
 
 COPY package.json /data/
 COPY src /data/src
@@ -16,4 +11,3 @@ WORKDIR /data
 EXPOSE 8080
 
 CMD ["node", "src/index.js"]
-
