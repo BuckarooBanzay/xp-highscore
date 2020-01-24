@@ -11,7 +11,7 @@ app.get('/api/highscore', function (req, res) {
 	var attrJoinColumn = "xp";
 	var orderColumn = "md.value::real";
 	var sortOrder = "desc";
-	
+
 	if (req.query) {
 		offset = parseInt(req.query.start) || 0;
 		if (req.query.order == "asc")
@@ -72,7 +72,7 @@ app.get('/api/highscore', function (req, res) {
 		});
 
 		return Promise.all(promises)
-		.then(result => score)
+		.then(() => score)
 		.catch(e => console.error(e));
 	})
 	.then(result => res.json(result))

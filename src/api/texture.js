@@ -1,4 +1,3 @@
-
 const app = require("../app");
 const fs = require('fs');
 
@@ -14,7 +13,7 @@ var walk = function(dir, done) {
     (function next() {
       var file = list[i++];
       if (!file) return done(null, results);
-      var filename = file
+      var filename = file;
       file = dir + '/' + file;
       fs.stat(file, function(err, stat) {
 	if (filename[0] === "."){
@@ -45,7 +44,7 @@ walk("world/worldmods", (err) => {
 });
 
 app.get('/api/texture/:name', function (req, res) {
-	var fullname = file_map[req.params.name]
+	var fullname = file_map[req.params.name];
 	if (fullname === undefined)
 		return res.status(404).end();
 
@@ -62,7 +61,3 @@ app.get('/api/texture/:name', function (req, res) {
 		}
 	});
 });
-
-
-
-

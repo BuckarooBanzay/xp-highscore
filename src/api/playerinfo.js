@@ -5,9 +5,6 @@ const pool = require('../pool');
 const getplayerattributes = require("../util/getplayerattributes");
 
 app.get('/api/playerinfo', function (req, res) {
-	const params = req.body;
-
-
 	if (req.query && req.query.name){
 
 		var query = "select p.name, p.modification_date, p.creation_date from player p";

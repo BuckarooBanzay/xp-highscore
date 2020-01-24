@@ -1,5 +1,4 @@
 
-const app = require("../app");
 const pool = require('../pool');
 
 module.exports = function(name){
@@ -16,4 +15,4 @@ module.exports = function(name){
 		return res;
 	})
 	.catch(e => console.error(e));
-}
+};
