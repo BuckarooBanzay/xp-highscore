@@ -2,6 +2,7 @@
 FROM node:13.10.1-alpine
 
 COPY package.json /data/
+COPY package-lock.json /data/
 COPY src /data/src
 COPY public /data/public
 
@@ -11,6 +12,7 @@ RUN cd /data && npm i && npm test
 FROM node:13.10.1-alpine
 
 COPY package.json /data/
+COPY package-lock.json /data/
 COPY src /data/src
 COPY public /data/public
 
