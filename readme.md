@@ -1,8 +1,8 @@
 
 xp highscore board
 
-![](https://github.com/thomasrudin-mt/xp-highscore/workflows/jshint/badge.svg)
-![](https://github.com/thomasrudin-mt/xp-highscore/workflows/docker/badge.svg)
+![](https://github.com/BuckarooBanzay/xp-highscore/workflows/jshint/badge.svg)
+![](https://github.com/BuckarooBanzay/xp-highscore/workflows/docker/badge.svg)
 
 
 # Overview
