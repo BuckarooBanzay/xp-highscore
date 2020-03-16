@@ -1,6 +1,7 @@
 # Stage 1 testing
 FROM node:13.10.1-alpine
 
+COPY .jshintrc /data/
 COPY package.json /data/
 COPY package-lock.json /data/
 COPY src /data/src
