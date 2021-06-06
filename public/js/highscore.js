@@ -26,7 +26,7 @@
 	}
 
 	updateSkins();
-	setInterval(updateSkins, 5000);
+	setInterval(updateSkins, 15000);
 
 	function getRank(xp){
 		var currentRank = null;
@@ -219,7 +219,7 @@
 	highscore.routes["/highscore"] = {
 		oninit: function(vnode) {
 			update();
-			this.handle = setInterval(update, 2000);
+			this.handle = setInterval(update, 10000);
 		},
 		onremove: function(vnode) {
 			clearInterval(this.handle);
